@@ -83,7 +83,11 @@ class SizerPrometheus(SizerModule):
         return metric or None
 
     def _get_prometheus_metrics(self, hostname, port, path):
-        url = 'http://{}:{}{}'.format(hostname, port, path)
+        # handle ipv6 address as hostname
+        if ':' in hostname:
+            url = 'http://[{}]:{}{}'.format(hostname, port, path)
+        else:
+            url = 'http://{}:{}{}'.format(hostname, port, path)
         body = ''
         try:
             response = urlopen(url)
